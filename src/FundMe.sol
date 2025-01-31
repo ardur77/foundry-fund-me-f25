@@ -31,7 +31,7 @@ contract FundMe {
     }
 
     function getVersion() public view returns (uint256) {
-       return s_priceFeed.version();
+        return s_priceFeed.version();
     }
 
     modifier onlyOwner() {
@@ -42,7 +42,7 @@ contract FundMe {
 
     function cheaperWithdraw() public onlyOwner {
         uint256 fundersLength = s_funders.length;
-        for( uint256 funderIndex = 0; funderIndex < fundersLength; funderIndex++){
+        for (uint256 funderIndex = 0; funderIndex < fundersLength; funderIndex++) {
             address funder = s_funders[funderIndex];
             s_addressToAmountFunded[funder] = 0;
         }
@@ -88,13 +88,12 @@ contract FundMe {
         fund();
     }
 
-    function getAddressToAmountFunded(address fundingAddress) external view returns(uint256) {
+    function getAddressToAmountFunded(address fundingAddress) external view returns (uint256) {
         return s_addressToAmountFunded[fundingAddress];
     }
 
     function getFunder(uint256 index) external view returns (address) {
         return s_funders[index];
-
     }
 
     function getOwner() external view returns (address) {

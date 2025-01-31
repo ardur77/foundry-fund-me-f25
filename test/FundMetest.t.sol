@@ -2,9 +2,9 @@
 
 pragma solidity ^0.8.18;
 
-import{Test, console} from "forge-std/Test.sol";
-import{FundMe} from "../src/FundMe.sol";
-import{DeployFundMe} from "../script/DeployFundMe.s.sol";
+import {Test, console} from "forge-std/Test.sol";
+import {FundMe} from "../src/FundMe.sol";
+import {DeployFundMe} from "../script/DeployFundMe.s.sol";
 
 contract FundMeTest is Test {
     FundMe fundMe;
@@ -18,18 +18,17 @@ contract FundMeTest is Test {
         DeployFundMe deployFundMe = new DeployFundMe();
         fundMe = deployFundMe.run();
         vm.deal(USER, STARTING_USER_BALANCE);
-
     }
 
-    function testMinDollarIsFive() public view{
+    function testMinDollarIsFive() public view {
         assertEq(fundMe.MINIMUM_USD(), 5e18);
     }
 
-    function testOwnerisMsgSender() public view{
+    function testOwnerisMsgSender() public view {
         assertEq(fundMe.i_owner(), msg.sender);
     }
 
-    function testPriceFeedVersionIsAccurate() public view{
+    function testPriceFeedVersionIsAccurate() public view {
         (uint256 version) = fundMe.getVersion();
         assertEq(version, 6);
     }
@@ -55,14 +54,13 @@ contract FundMeTest is Test {
         assertEq(funder, USER);
     }
 
-    modifier funded {
+    modifier funded() {
         vm.prank(USER);
         fundMe.fund{value: SEND_VALUE}();
         _;
     }
 
     function testOnlyOwnerCanWithdraw() public funded {
-        
         vm.prank(USER);
         vm.expectRevert();
         fundMe.withdraw();
@@ -92,8 +90,7 @@ contract FundMeTest is Test {
         //Arrange
         uint160 numberofFunders = 10;
         uint160 startingFundingIndex = 1;
-        for(uint160 i = startingFundingIndex; i< numberofFunders; i++){
-
+        for (uint160 i = startingFundingIndex; i < numberofFunders; i++) {
             hoax(address(i), STARTING_USER_BALANCE);
             fundMe.fund{value: SEND_VALUE}();
         }
@@ -109,12 +106,11 @@ contract FundMeTest is Test {
         assertEq(startingFundMeBalance + startingOwnerBalance, fundMe.getOwner().balance);
     }
 
-function testWithdrawFromMultipleFundersCheaper() public funded {
+    function testWithdrawFromMultipleFundersCheaper() public funded {
         //Arrange
         uint160 numberofFunders = 10;
         uint160 startingFundingIndex = 1;
-        for(uint160 i = startingFundingIndex; i< numberofFunders; i++){
-
+        for (uint160 i = startingFundingIndex; i < numberofFunders; i++) {
             hoax(address(i), STARTING_USER_BALANCE);
             fundMe.fund{value: SEND_VALUE}();
         }
@@ -129,5 +125,4 @@ function testWithdrawFromMultipleFundersCheaper() public funded {
         assert(address(fundMe).balance == 0);
         assertEq(startingFundMeBalance + startingOwnerBalance, fundMe.getOwner().balance);
     }
-
 }
